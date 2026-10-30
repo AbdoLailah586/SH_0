@@ -1,0 +1,57 @@
+# ==========================================
+# Git Ignore for AI Smart Home Voice Hub
+# ==========================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Build and Distribution artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# PyInstaller temporary files (preserve our custom app.spec)
+*.manifest
+SmartHomeVoiceHub.spec
+
+# External / Submodule cloned repos & downloaded multi-gigabyte models
+fish_speech_repo/
+checkpoints/
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.tiktoken
+
+# Dynamic SSL Certificates (auto-generated at runtime per host LAN IP)
+config/ssl/cert.pem
+config/ssl/key.pem
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Operating System specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

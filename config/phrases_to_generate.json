@@ -1,0 +1,497 @@
+{
+  "description": "List of phrases and emotions to generate into the audio cache via Fish Speech or fallback TTS",
+  "default_fish_speech_url": "http://127.0.0.1:8080/v1/tts",
+  "phrases": [
+    {
+      "intent_id": "LIGHT_RECEPTION_ON",
+      "variation_id": 1,
+      "text": "[friendly] تمام يا فندم، نورتلك الريسبشن",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_reception_on_1.wav"
+    },
+    {
+      "intent_id": "LIGHT_RECEPTION_ON",
+      "variation_id": 2,
+      "text": "[friendly] من عنيا، نور الريسبشن اشتغل",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_reception_on_2.wav"
+    },
+    {
+      "intent_id": "LIGHT_RECEPTION_ON",
+      "variation_id": 3,
+      "text": "حاضر، فتحت نور الريسبشن",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_reception_on_3.wav"
+    },
+    {
+      "intent_id": "LIGHT_RECEPTION_OFF",
+      "variation_id": 1,
+      "text": "حاضر يا فندم، قفلت النور",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_reception_off_1.wav"
+    },
+    {
+      "intent_id": "LIGHT_RECEPTION_OFF",
+      "variation_id": 2,
+      "text": "[friendly] تمام، طفيت نور الريسبشن",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_reception_off_2.wav"
+    },
+    {
+      "intent_id": "LIGHT_RECEPTION_OFF",
+      "variation_id": 3,
+      "text": "[friendly] من عنيا، النور اتقفل خلاص",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_reception_off_3.wav"
+    },
+    {
+      "intent_id": "LIGHT_BEDROOM_ON",
+      "variation_id": 1,
+      "text": "[friendly] تمام، نورت غرفة النوم",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_bedroom_on_1.wav"
+    },
+    {
+      "intent_id": "LIGHT_BEDROOM_ON",
+      "variation_id": 2,
+      "text": "حاضر، فتحت نور الأوضة",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_bedroom_on_2.wav"
+    },
+    {
+      "intent_id": "LIGHT_BEDROOM_OFF",
+      "variation_id": 1,
+      "text": "حاضر، قفلت نور غرفة النوم",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_bedroom_off_1.wav"
+    },
+    {
+      "intent_id": "LIGHT_BEDROOM_OFF",
+      "variation_id": 2,
+      "text": "[calm] تمام، طفيت نور الأوضة",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_bedroom_off_2.wav"
+    },
+    {
+      "intent_id": "LIGHT_ALL_ON",
+      "variation_id": 1,
+      "text": "[excited] تمام يا فندم، نورت البيت كله",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_all_on_1.wav"
+    },
+    {
+      "intent_id": "LIGHT_ALL_ON",
+      "variation_id": 2,
+      "text": "[friendly] حاضر، كل الأنوار اشتغلت دلوقتي",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_all_on_2.wav"
+    },
+    {
+      "intent_id": "LIGHT_ALL_OFF",
+      "variation_id": 1,
+      "text": "حاضر، قفلت كل الأنوار",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_all_off_1.wav"
+    },
+    {
+      "intent_id": "LIGHT_ALL_OFF",
+      "variation_id": 2,
+      "text": "[calm] تمام يا فندم، طفيت كل اللمبات",
+      "category": "lighting",
+      "file": "audio_cache/lighting/light_all_off_2.wav"
+    },
+    {
+      "intent_id": "ESP32_LED_ON",
+      "variation_id": 1,
+      "text": "[friendly] تمام، فتحت لمبة الاختبار الزرقاء على البوردة",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/esp32_led_on_1.wav"
+    },
+    {
+      "intent_id": "ESP32_LED_ON",
+      "variation_id": 2,
+      "text": "حاضر، الليد الأزرق شغال دلوقتي على البوردة",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/esp32_led_on_2.wav"
+    },
+    {
+      "intent_id": "ESP32_LED_OFF",
+      "variation_id": 1,
+      "text": "تمام، قفلت لمبة الاختبار",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/esp32_led_off_1.wav"
+    },
+    {
+      "intent_id": "ESP32_LED_OFF",
+      "variation_id": 2,
+      "text": "[friendly] حاضر، طفيت الليد على البوردة",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/esp32_led_off_2.wav"
+    },
+    {
+      "intent_id": "ESP32_STATUS_CHECK",
+      "variation_id": 1,
+      "text": "[friendly] البوردة متصلة وشغالة بنجاح يا فندم",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/esp32_status_1.wav"
+    },
+    {
+      "intent_id": "ESP32_STATUS_CHECK",
+      "variation_id": 2,
+      "text": "[friendly] كله تمام، البوردة أونلاين ومستعدة للأوامر",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/esp32_status_2.wav"
+    },
+    {
+      "intent_id": "FAN_ON",
+      "variation_id": 1,
+      "text": "[friendly] حاضر، شغلت المروحة",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/fan_on_1.wav"
+    },
+    {
+      "intent_id": "FAN_ON",
+      "variation_id": 2,
+      "text": "تمام، المروحة شغالة دلوقتي",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/fan_on_2.wav"
+    },
+    {
+      "intent_id": "FAN_OFF",
+      "variation_id": 1,
+      "text": "حاضر، قفلت المروحة",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/fan_off_1.wav"
+    },
+    {
+      "intent_id": "FAN_OFF",
+      "variation_id": 2,
+      "text": "[friendly] تمام، طفيت المروحة خلاص",
+      "category": "esp32_hardware",
+      "file": "audio_cache/esp32_hardware/fan_off_2.wav"
+    },
+    {
+      "intent_id": "AC_SET_22",
+      "variation_id": 1,
+      "text": "[friendly] تمام يا فندم، ظبطت التكييف على 22 درجة",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_set_22_1.wav"
+    },
+    {
+      "intent_id": "AC_SET_22",
+      "variation_id": 2,
+      "text": "حاضر، التكييف شغال على 22 درجة تبريد",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_set_22_2.wav"
+    },
+    {
+      "intent_id": "AC_SET_24",
+      "variation_id": 1,
+      "text": "[friendly] تمام، التكييف مظبوط على 24 درجة",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_set_24_1.wav"
+    },
+    {
+      "intent_id": "AC_SET_24",
+      "variation_id": 2,
+      "text": "حاضر، خليت التكييف على 24",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_set_24_2.wav"
+    },
+    {
+      "intent_id": "AC_SET_20",
+      "variation_id": 1,
+      "text": "[friendly] تمام يا فندم، نزلت التكييف لـ 20 درجة سقعية",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_set_20_1.wav"
+    },
+    {
+      "intent_id": "AC_SET_20",
+      "variation_id": 2,
+      "text": "حاضر، خليت التكييف على 20 درجة",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_set_20_2.wav"
+    },
+    {
+      "intent_id": "AC_OFF",
+      "variation_id": 1,
+      "text": "حاضر، قفلت التكييف",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_off_1.wav"
+    },
+    {
+      "intent_id": "AC_OFF",
+      "variation_id": 2,
+      "text": "[friendly] تمام، التكييف اتقفل خلاص",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/ac_off_2.wav"
+    },
+    {
+      "intent_id": "WINDOW_OPEN",
+      "variation_id": 1,
+      "text": "[friendly] تمام، فتحت الشباك للتهوية",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/window_open_1.wav"
+    },
+    {
+      "intent_id": "WINDOW_OPEN",
+      "variation_id": 2,
+      "text": "حاضر، الشباك مفتوح دلوقتي",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/window_open_2.wav"
+    },
+    {
+      "intent_id": "WINDOW_CLOSE",
+      "variation_id": 1,
+      "text": "حاضر، قفلت الشباك تماماً",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/window_close_1.wav"
+    },
+    {
+      "intent_id": "WINDOW_CLOSE",
+      "variation_id": 2,
+      "text": "[friendly] تمام، الشباك مقفول دلوقتي",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/window_close_2.wav"
+    },
+    {
+      "intent_id": "CURTAIN_OPEN",
+      "variation_id": 1,
+      "text": "[friendly] تمام، فتحت الستائر",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/curtain_open_1.wav"
+    },
+    {
+      "intent_id": "CURTAIN_OPEN",
+      "variation_id": 2,
+      "text": "حاضر، الستارة اتفتحت",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/curtain_open_2.wav"
+    },
+    {
+      "intent_id": "CURTAIN_CLOSE",
+      "variation_id": 1,
+      "text": "حاضر، قفلت الستائر",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/curtain_close_1.wav"
+    },
+    {
+      "intent_id": "CURTAIN_CLOSE",
+      "variation_id": 2,
+      "text": "[calm] تمام، الستارة اتقفلت",
+      "category": "ac_climate",
+      "file": "audio_cache/ac_climate/curtain_close_2.wav"
+    },
+    {
+      "intent_id": "VOLUME_UP",
+      "variation_id": 1,
+      "text": "[friendly] تمام، عليت الصوت",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/volume_up_1.wav"
+    },
+    {
+      "intent_id": "VOLUME_UP",
+      "variation_id": 2,
+      "text": "من عنيا، الصوت علي",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/volume_up_2.wav"
+    },
+    {
+      "intent_id": "VOLUME_DOWN",
+      "variation_id": 1,
+      "text": "حاضر، وطيت الصوت",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/volume_down_1.wav"
+    },
+    {
+      "intent_id": "VOLUME_DOWN",
+      "variation_id": 2,
+      "text": "[friendly] تمام، وطيت صوت اللابتوب",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/volume_down_2.wav"
+    },
+    {
+      "intent_id": "VOLUME_MUTE",
+      "variation_id": 1,
+      "text": "حاضر، كتمت الصوت",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/volume_mute_1.wav"
+    },
+    {
+      "intent_id": "VOLUME_MUTE",
+      "variation_id": 2,
+      "text": "[calm] تمام، الصوت مكتوم",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/volume_mute_2.wav"
+    },
+    {
+      "intent_id": "LOCK_SCREEN",
+      "variation_id": 1,
+      "text": "حاضر، قفلت شاشة اللابتوب",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/lock_screen_1.wav"
+    },
+    {
+      "intent_id": "LOCK_SCREEN",
+      "variation_id": 2,
+      "text": "[friendly] تمام، قفلت الشاشة في ثانية",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/lock_screen_2.wav"
+    },
+    {
+      "intent_id": "BATTERY_STATUS",
+      "variation_id": 1,
+      "text": "[friendly] نسبة الشحن ممتازة والجهاز شغال تمام",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/battery_status_1.wav"
+    },
+    {
+      "intent_id": "BATTERY_STATUS",
+      "variation_id": 2,
+      "text": "البطارية تمام وشغالة كويس",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/battery_status_2.wav"
+    },
+    {
+      "intent_id": "MEDIA_PLAY_PAUSE",
+      "variation_id": 1,
+      "text": "[friendly] حاضر، بدلت تشغيل الميديا",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/media_play_pause_1.wav"
+    },
+    {
+      "intent_id": "MEDIA_PLAY_PAUSE",
+      "variation_id": 2,
+      "text": "تمام، وقفت أو شغلت الصوت",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/media_play_pause_2.wav"
+    },
+    {
+      "intent_id": "OPEN_CHROME",
+      "variation_id": 1,
+      "text": "حاضر، فتحت جوجل كروم",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/open_chrome_1.wav"
+    },
+    {
+      "intent_id": "OPEN_CHROME",
+      "variation_id": 2,
+      "text": "[excited] تمام، متصفح كروم جاهز قدامك",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/open_chrome_2.wav"
+    },
+    {
+      "intent_id": "OPEN_SPOTIFY",
+      "variation_id": 1,
+      "text": "حاضر، فتحت تطبيق سبوتيفاي",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/open_spotify_1.wav"
+    },
+    {
+      "intent_id": "OPEN_SPOTIFY",
+      "variation_id": 2,
+      "text": "تمام يا فندم، سبوتيفاي شغال",
+      "category": "laptop_control",
+      "file": "audio_cache/laptop_control/open_spotify_2.wav"
+    },
+    {
+      "intent_id": "GREETING_HELLO",
+      "variation_id": 1,
+      "text": "[friendly] أهلاً بيك يا فندم، نورت بيتك",
+      "category": "greetings",
+      "file": "audio_cache/greetings/greeting_hello_1.wav"
+    },
+    {
+      "intent_id": "GREETING_HELLO",
+      "variation_id": 2,
+      "text": "[friendly] وعليكم السلام، أؤمرني أعملك إيه؟",
+      "category": "greetings",
+      "file": "audio_cache/greetings/greeting_hello_2.wav"
+    },
+    {
+      "intent_id": "GREETING_HELLO",
+      "variation_id": 3,
+      "text": "[friendly] يا هلا، أنا في خدمتك دايماً",
+      "category": "greetings",
+      "file": "audio_cache/greetings/greeting_hello_3.wav"
+    },
+    {
+      "intent_id": "WHO_ARE_YOU",
+      "variation_id": 1,
+      "text": "[friendly] أنا مساعدك الذكي للسمارت هوم، بتحكم في البيت واللابتوب بصوتك وبدون أي تأخير",
+      "category": "greetings",
+      "file": "audio_cache/greetings/who_are_you_1.wav"
+    },
+    {
+      "intent_id": "WHO_ARE_YOU",
+      "variation_id": 2,
+      "text": "أنا نظام التحكم الصوتي الذكي في منزلك",
+      "category": "greetings",
+      "file": "audio_cache/greetings/who_are_you_2.wav"
+    },
+    {
+      "intent_id": "THANK_YOU",
+      "variation_id": 1,
+      "text": "[friendly] العفو يا فندم، تحت أمرك دايماً",
+      "category": "greetings",
+      "file": "audio_cache/greetings/thank_you_1.wav"
+    },
+    {
+      "intent_id": "THANK_YOU",
+      "variation_id": 2,
+      "text": "[friendly] تسلم يا غالي، في خدمتك في أي وقت",
+      "category": "greetings",
+      "file": "audio_cache/greetings/thank_you_2.wav"
+    },
+    {
+      "intent_id": "INSTANT_ACK",
+      "variation_id": 1,
+      "text": "تمام يا فندم",
+      "category": "greetings",
+      "file": "audio_cache/greetings/instant_ack_1.wav"
+    },
+    {
+      "intent_id": "INSTANT_ACK",
+      "variation_id": 2,
+      "text": "[friendly] من عنيا",
+      "category": "greetings",
+      "file": "audio_cache/greetings/instant_ack_2.wav"
+    },
+    {
+      "intent_id": "INSTANT_ACK",
+      "variation_id": 3,
+      "text": "حاضر",
+      "category": "greetings",
+      "file": "audio_cache/greetings/instant_ack_3.wav"
+    },
+    {
+      "intent_id": "NIGHT_MODE_ACTIVATED",
+      "variation_id": 1,
+      "text": "[whisper] تصبح على خير يا فندم، قفلت الأنوار وهديت البيت",
+      "category": "whispers",
+      "file": "audio_cache/whispers/night_mode_1.wav"
+    },
+    {
+      "intent_id": "NIGHT_MODE_ACTIVATED",
+      "variation_id": 2,
+      "text": "[whisper] نوم الهنا يا غالي، وضع الهدوء شغال دلوقتي",
+      "category": "whispers",
+      "file": "audio_cache/whispers/night_mode_2.wav"
+    },
+    {
+      "intent_id": "WHISPER_LIGHT_OFF",
+      "variation_id": 1,
+      "text": "[whisper] قفلت النور بالراحة، أحلام سعيدة",
+      "category": "whispers",
+      "file": "audio_cache/whispers/whisper_light_off_1.wav"
+    },
+    {
+      "intent_id": "WHISPER_LIGHT_OFF",
+      "variation_id": 2,
+      "text": "[whisper] النور اتقفل، نوم هادي إن شاء الله",
+      "category": "whispers",
+      "file": "audio_cache/whispers/whisper_light_off_2.wav"
+    }
+  ]
+}
+

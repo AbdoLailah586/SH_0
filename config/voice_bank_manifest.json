@@ -1,0 +1,1013 @@
+{
+  "version": "1.0.0",
+  "name": "Smart Home Egyptian Arabic Voice Bank Manifest",
+  "description": "Pre-generated audio cache catalog for zero-latency Egyptian Arabic voice responses with natural variations",
+  "categories": [
+    "lighting",
+    "esp32_hardware",
+    "ac_climate",
+    "laptop_control",
+    "greetings",
+    "whispers"
+  ],
+  "intents": [
+    {
+      "intent_id": "LIGHT_RECEPTION_ON",
+      "category": "lighting",
+      "description": "Turn on reception / living room light (Relay 1)",
+      "trigger_patterns": [
+        "افتح النور",
+        "نور الريسبشن",
+        "شغل اللمبة",
+        "افتح لمبة الريسبشن",
+        "ولع النور",
+        "شغل النور"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 1, "state": "on" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام يا فندم، نورتلك الريسبشن",
+          "audio_file": "audio_cache/lighting/light_reception_on_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "من عنيا، نور الريسبشن اشتغل",
+          "audio_file": "audio_cache/lighting/light_reception_on_2.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 3,
+          "text_ar": "حاضر، فتحت نور الريسبشن",
+          "audio_file": "audio_cache/lighting/light_reception_on_3.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "LIGHT_RECEPTION_OFF",
+      "category": "lighting",
+      "description": "Turn off reception / living room light (Relay 1)",
+      "trigger_patterns": [
+        "اقفل النور",
+        "اطفي النور",
+        "ضلم الريسبشن",
+        "اقفل لمبة الريسبشن",
+        "اطفي لمبة الريسبشن",
+        "اطفي النور بتاع الريسبشن"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 1, "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر يا فندم، قفلت النور",
+          "audio_file": "audio_cache/lighting/light_reception_off_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، طفيت نور الريسبشن",
+          "audio_file": "audio_cache/lighting/light_reception_off_2.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 3,
+          "text_ar": "من عنيا، النور اتقفل خلاص",
+          "audio_file": "audio_cache/lighting/light_reception_off_3.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "LIGHT_BEDROOM_ON",
+      "category": "lighting",
+      "description": "Turn on bedroom light (Relay 2)",
+      "trigger_patterns": [
+        "نور الاوضة",
+        "افتح نور غرفة النوم",
+        "شغل لمبة الاوضة",
+        "افتح نور الاوضة",
+        "نور غرفة النوم"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 2, "state": "on" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، نورت غرفة النوم",
+          "audio_file": "audio_cache/lighting/light_bedroom_on_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، فتحت نور الأوضة",
+          "audio_file": "audio_cache/lighting/light_bedroom_on_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "LIGHT_BEDROOM_OFF",
+      "category": "lighting",
+      "description": "Turn off bedroom light (Relay 2)",
+      "trigger_patterns": [
+        "اطفي الاوضة",
+        "اقفل نور غرفة النوم",
+        "ضلم الاوضة",
+        "اطفي نور الاوضة",
+        "اقفل نور الاوضة"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 2, "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت نور غرفة النوم",
+          "audio_file": "audio_cache/lighting/light_bedroom_off_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، طفيت نور الأوضة",
+          "audio_file": "audio_cache/lighting/light_bedroom_off_2.wav",
+          "emotion": "calm"
+        }
+      ]
+    },
+    {
+      "intent_id": "LIGHT_ALL_ON",
+      "category": "lighting",
+      "description": "Turn on all lights in the home",
+      "trigger_patterns": [
+        "نور البيت كله",
+        "افتح كل الانوار",
+        "شغل كل اللمبات",
+        "افتح النور في كل مكان"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/all_lights",
+        "params": { "state": "on" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام يا فندم، نورت البيت كله",
+          "audio_file": "audio_cache/lighting/light_all_on_1.wav",
+          "emotion": "excited"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، كل الأنوار اشتغلت دلوقتي",
+          "audio_file": "audio_cache/lighting/light_all_on_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "LIGHT_ALL_OFF",
+      "category": "lighting",
+      "description": "Turn off all lights in the home",
+      "trigger_patterns": [
+        "اطفي البيت كله",
+        "اقفل كل الانوار",
+        "ضلم البيت",
+        "اقفل كل اللمبات"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/all_lights",
+        "params": { "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت كل الأنوار",
+          "audio_file": "audio_cache/lighting/light_all_off_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام يا فندم، طفيت كل اللمبات",
+          "audio_file": "audio_cache/lighting/light_all_off_2.wav",
+          "emotion": "calm"
+        }
+      ]
+    },
+    {
+      "intent_id": "ESP32_LED_ON",
+      "category": "esp32_hardware",
+      "description": "Turn on ESP32 onboard testing LED (GPIO 2)",
+      "trigger_patterns": [
+        "افتح لمبة الاختبار",
+        "شغل ليد البوردة",
+        "افتح الليد الازرق",
+        "نور الليد",
+        "شغل ليد التيست"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/led",
+        "params": { "state": "on" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، فتحت لمبة الاختبار الزرقاء على البوردة",
+          "audio_file": "audio_cache/esp32_hardware/esp32_led_on_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، الليد الأزرق شغال دلوقتي على البوردة",
+          "audio_file": "audio_cache/esp32_hardware/esp32_led_on_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "ESP32_LED_OFF",
+      "category": "esp32_hardware",
+      "description": "Turn off ESP32 onboard testing LED (GPIO 2)",
+      "trigger_patterns": [
+        "اطفي لمبة الاختبار",
+        "اقفل ليد البوردة",
+        "اطفي الليد الازرق",
+        "اقفل الليد الازرق"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/led",
+        "params": { "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، قفلت لمبة الاختبار",
+          "audio_file": "audio_cache/esp32_hardware/esp32_led_off_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، طفيت الليد على البوردة",
+          "audio_file": "audio_cache/esp32_hardware/esp32_led_off_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "ESP32_STATUS_CHECK",
+      "category": "esp32_hardware",
+      "description": "Check connection status of ESP32",
+      "trigger_patterns": [
+        "حالة البوردة",
+        "حالة الهاردوير",
+        "افحص البوردة",
+        "شيك على الهاردوير"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/status",
+        "params": {}
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "البوردة متصلة وشغالة بنجاح يا فندم",
+          "audio_file": "audio_cache/esp32_hardware/esp32_status_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "كله تمام، البوردة أونلاين ومستعدة للأوامر",
+          "audio_file": "audio_cache/esp32_hardware/esp32_status_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "FAN_ON",
+      "category": "esp32_hardware",
+      "description": "Turn on appliance/fan (Relay 3)",
+      "trigger_patterns": [
+        "شغل المروحة",
+        "افتح المروحة",
+        "دور المروحة"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 3, "state": "on" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، شغلت المروحة",
+          "audio_file": "audio_cache/esp32_hardware/fan_on_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، المروحة شغالة دلوقتي",
+          "audio_file": "audio_cache/esp32_hardware/fan_on_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "FAN_OFF",
+      "category": "esp32_hardware",
+      "description": "Turn off appliance/fan (Relay 3)",
+      "trigger_patterns": [
+        "اطفي المروحة",
+        "اقفل المروحة",
+        "بطل المروحة"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 3, "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت المروحة",
+          "audio_file": "audio_cache/esp32_hardware/fan_off_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، طفيت المروحة خلاص",
+          "audio_file": "audio_cache/esp32_hardware/fan_off_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "AC_SET_22",
+      "category": "ac_climate",
+      "description": "Set AC temperature to 22C",
+      "trigger_patterns": [
+        "شغل التكييف على 22",
+        "خلي التكييف 22",
+        "اضبط التكييف على 22",
+        "ظبط التكييف على 22"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/ac",
+        "params": { "power": "on", "temp": 22, "mode": "cool" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام يا فندم، ظبطت التكييف على 22 درجة",
+          "audio_file": "audio_cache/ac_climate/ac_set_22_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، التكييف شغال على 22 درجة تبريد",
+          "audio_file": "audio_cache/ac_climate/ac_set_22_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "AC_SET_24",
+      "category": "ac_climate",
+      "description": "Set AC temperature to 24C",
+      "trigger_patterns": [
+        "شغل التكييف على 24",
+        "خلي التكييف 24",
+        "اضبط التكييف على 24",
+        "ظبط التكييف على 24"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/ac",
+        "params": { "power": "on", "temp": 24, "mode": "cool" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، التكييف مظبوط على 24 درجة",
+          "audio_file": "audio_cache/ac_climate/ac_set_24_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، خليت التكييف على 24",
+          "audio_file": "audio_cache/ac_climate/ac_set_24_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "AC_SET_20",
+      "category": "ac_climate",
+      "description": "Set AC temperature to 20C (cool)",
+      "trigger_patterns": [
+        "سقع التكييف",
+        "خلي التكييف 20",
+        "شغل التكييف على 20",
+        "اضبط التكييف على 20"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/ac",
+        "params": { "power": "on", "temp": 20, "mode": "cool" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام يا فندم، نزلت التكييف لـ 20 درجة سقعية",
+          "audio_file": "audio_cache/ac_climate/ac_set_20_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، خليت التكييف على 20 درجة",
+          "audio_file": "audio_cache/ac_climate/ac_set_20_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "AC_OFF",
+      "category": "ac_climate",
+      "description": "Turn off Air Conditioner",
+      "trigger_patterns": [
+        "اطفي التكييف",
+        "اقفل التكييف",
+        "وقف التكييف"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/ac",
+        "params": { "power": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت التكييف",
+          "audio_file": "audio_cache/ac_climate/ac_off_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، التكييف اتقفل خلاص",
+          "audio_file": "audio_cache/ac_climate/ac_off_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "WINDOW_OPEN",
+      "category": "ac_climate",
+      "description": "Open window",
+      "trigger_patterns": [
+        "افتح الشباك",
+        "افتح الشباك شوية",
+        "هوي الاوضة"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/window",
+        "params": { "pos": 100 }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، فتحت الشباك للتهوية",
+          "audio_file": "audio_cache/ac_climate/window_open_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، الشباك مفتوح دلوقتي",
+          "audio_file": "audio_cache/ac_climate/window_open_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "WINDOW_CLOSE",
+      "category": "ac_climate",
+      "description": "Close window",
+      "trigger_patterns": [
+        "اقفل الشباك",
+        "سكر الشباك"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/window",
+        "params": { "pos": 0 }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت الشباك تماماً",
+          "audio_file": "audio_cache/ac_climate/window_close_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، الشباك مقفول دلوقتي",
+          "audio_file": "audio_cache/ac_climate/window_close_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "CURTAIN_OPEN",
+      "category": "ac_climate",
+      "description": "Open curtain",
+      "trigger_patterns": [
+        "افتح الستارة",
+        "ارفع الستارة",
+        "افتح الستاير"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/window",
+        "params": { "pos": 100 }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، فتحت الستائر",
+          "audio_file": "audio_cache/ac_climate/curtain_open_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "حاضر، الستارة اتفتحت",
+          "audio_file": "audio_cache/ac_climate/curtain_open_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "CURTAIN_CLOSE",
+      "category": "ac_climate",
+      "description": "Close curtain",
+      "trigger_patterns": [
+        "اقفل الستارة",
+        "نزل الستارة",
+        "اقفل الستاير"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/window",
+        "params": { "pos": 0 }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت الستائر",
+          "audio_file": "audio_cache/ac_climate/curtain_close_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، الستارة اتقفلت",
+          "audio_file": "audio_cache/ac_climate/curtain_close_2.wav",
+          "emotion": "calm"
+        }
+      ]
+    },
+    {
+      "intent_id": "VOLUME_UP",
+      "category": "laptop_control",
+      "description": "Increase laptop master volume",
+      "trigger_patterns": [
+        "علي الصوت",
+        "ارفع الصوت",
+        "علي صوت اللابتوب",
+        "علي الصوت شوية"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "volume_up",
+        "step": 15
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام، عليت الصوت",
+          "audio_file": "audio_cache/laptop_control/volume_up_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "من عنيا، الصوت علي",
+          "audio_file": "audio_cache/laptop_control/volume_up_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "VOLUME_DOWN",
+      "category": "laptop_control",
+      "description": "Decrease laptop master volume",
+      "trigger_patterns": [
+        "وطي الصوت",
+        "نزل الصوت",
+        "وطي صوت اللابتوب",
+        "وطي الصوت شوية"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "volume_down",
+        "step": 15
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، وطيت الصوت",
+          "audio_file": "audio_cache/laptop_control/volume_down_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، وطيت صوت اللابتوب",
+          "audio_file": "audio_cache/laptop_control/volume_down_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "VOLUME_MUTE",
+      "category": "laptop_control",
+      "description": "Mute laptop audio",
+      "trigger_patterns": [
+        "اكتم الصوت",
+        "صامت",
+        "اسكت",
+        "كتم الصوت",
+        "ميوت"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "mute"
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، كتمت الصوت",
+          "audio_file": "audio_cache/laptop_control/volume_mute_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، الصوت مكتوم",
+          "audio_file": "audio_cache/laptop_control/volume_mute_2.wav",
+          "emotion": "calm"
+        }
+      ]
+    },
+    {
+      "intent_id": "LOCK_SCREEN",
+      "category": "laptop_control",
+      "description": "Lock Windows desktop session",
+      "trigger_patterns": [
+        "اقفل اللابتوب",
+        "اقفل الشاشة",
+        "لوك للشاشة",
+        "اعمل لوك للكمبيوتر"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "lock_screen"
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، قفلت شاشة اللابتوب",
+          "audio_file": "audio_cache/laptop_control/lock_screen_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، قفلت الشاشة في ثانية",
+          "audio_file": "audio_cache/laptop_control/lock_screen_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "BATTERY_STATUS",
+      "category": "laptop_control",
+      "description": "Report laptop battery level",
+      "trigger_patterns": [
+        "بطارية اللابتوب كام",
+        "نسبة الشحن كام",
+        "شحن البطارية",
+        "البطارية كام في المية"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "battery_status"
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "نسبة الشحن ممتازة والجهاز شغال تمام",
+          "audio_file": "audio_cache/laptop_control/battery_status_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "البطارية تمام وشغالة كويس",
+          "audio_file": "audio_cache/laptop_control/battery_status_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "MEDIA_PLAY_PAUSE",
+      "category": "laptop_control",
+      "description": "Toggle media playback (Play/Pause)",
+      "trigger_patterns": [
+        "وقف الموسيقى",
+        "شغل الموسيقى",
+        "وقف الفيديو",
+        "كمل الفيديو",
+        "شغل الاغنية",
+        "وقف الاغنية"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "play_pause"
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، بدلت تشغيل الميديا",
+          "audio_file": "audio_cache/laptop_control/media_play_pause_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، وقفت أو شغلت الصوت",
+          "audio_file": "audio_cache/laptop_control/media_play_pause_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "OPEN_CHROME",
+      "category": "laptop_control",
+      "description": "Launch Google Chrome browser",
+      "trigger_patterns": [
+        "افتح كروم",
+        "افتح المتصفح",
+        "شغل جوجل كروم"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "launch_app",
+        "app": "chrome"
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، فتحت جوجل كروم",
+          "audio_file": "audio_cache/laptop_control/open_chrome_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام، متصفح كروم جاهز قدامك",
+          "audio_file": "audio_cache/laptop_control/open_chrome_2.wav",
+          "emotion": "excited"
+        }
+      ]
+    },
+    {
+      "intent_id": "OPEN_SPOTIFY",
+      "category": "laptop_control",
+      "description": "Launch Spotify app",
+      "trigger_patterns": [
+        "افتح سبوتيفاي",
+        "شغل سبوتيفاي",
+        "شغل اغاني"
+      ],
+      "action_type": "laptop",
+      "action_payload": {
+        "action": "launch_app",
+        "app": "spotify"
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "حاضر، فتحت تطبيق سبوتيفاي",
+          "audio_file": "audio_cache/laptop_control/open_spotify_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "تمام يا فندم، سبوتيفاي شغال",
+          "audio_file": "audio_cache/laptop_control/open_spotify_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "GREETING_HELLO",
+      "category": "greetings",
+      "description": "Friendly greeting",
+      "trigger_patterns": [
+        "صباح الخير",
+        "مساء الخير",
+        "السلام عليكم",
+        "اهلا",
+        "يا هوم",
+        "الو"
+      ],
+      "action_type": "info",
+      "action_payload": {},
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "أهلاً بيك يا فندم، نورت بيتك",
+          "audio_file": "audio_cache/greetings/greeting_hello_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "وعليكم السلام، أؤمرني أعملك إيه؟",
+          "audio_file": "audio_cache/greetings/greeting_hello_2.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 3,
+          "text_ar": "يا هلا، أنا في خدمتك دايماً",
+          "audio_file": "audio_cache/greetings/greeting_hello_3.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "WHO_ARE_YOU",
+      "category": "greetings",
+      "description": "Assistant self introduction",
+      "trigger_patterns": [
+        "انت مين",
+        "عرفني بنفسك",
+        "بتعمل ايه"
+      ],
+      "action_type": "info",
+      "action_payload": {},
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "أنا مساعدك الذكي للسمارت هوم، بتحكم في البيت واللابتوب بصوتك وبدون أي تأخير",
+          "audio_file": "audio_cache/greetings/who_are_you_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "أنا نظام التحكم الصوتي الذكي في منزلك",
+          "audio_file": "audio_cache/greetings/who_are_you_2.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "THANK_YOU",
+      "category": "greetings",
+      "description": "Respond to thank you",
+      "trigger_patterns": [
+        "شكرا",
+        "تسلم",
+        "الله يخليك",
+        "الف شكر",
+        "حبيبي"
+      ],
+      "action_type": "info",
+      "action_payload": {},
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "العفو يا فندم، تحت أمرك دايماً",
+          "audio_file": "audio_cache/greetings/thank_you_1.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 2,
+          "text_ar": "تسلم يا غالي، في خدمتك في أي وقت",
+          "audio_file": "audio_cache/greetings/thank_you_2.wav",
+          "emotion": "friendly"
+        }
+      ]
+    },
+    {
+      "intent_id": "INSTANT_ACK",
+      "category": "greetings",
+      "description": "Instant acknowledgement",
+      "trigger_patterns": [
+        "تمام",
+        "ماشي",
+        "يا سيدي"
+      ],
+      "action_type": "info",
+      "action_payload": {},
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تمام يا فندم",
+          "audio_file": "audio_cache/greetings/instant_ack_1.wav",
+          "emotion": "normal"
+        },
+        {
+          "id": 2,
+          "text_ar": "من عنيا",
+          "audio_file": "audio_cache/greetings/instant_ack_2.wav",
+          "emotion": "friendly"
+        },
+        {
+          "id": 3,
+          "text_ar": "حاضر",
+          "audio_file": "audio_cache/greetings/instant_ack_3.wav",
+          "emotion": "normal"
+        }
+      ]
+    },
+    {
+      "intent_id": "NIGHT_MODE_ACTIVATED",
+      "category": "whispers",
+      "description": "Night Whisper mode activation",
+      "trigger_patterns": [
+        "وضع النوم",
+        "وضع الهدوء",
+        "هنام دلوقتي",
+        "تصبح على خير"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/all_lights",
+        "params": { "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "تصبح على خير يا فندم، قفلت الأنوار وهديت البيت",
+          "audio_file": "audio_cache/whispers/night_mode_1.wav",
+          "emotion": "whisper"
+        },
+        {
+          "id": 2,
+          "text_ar": "نوم الهنا يا غالي، وضع الهدوء شغال دلوقتي",
+          "audio_file": "audio_cache/whispers/night_mode_2.wav",
+          "emotion": "whisper"
+        }
+      ]
+    },
+    {
+      "intent_id": "WHISPER_LIGHT_OFF",
+      "category": "whispers",
+      "description": "Quiet whisper response for late night light off",
+      "trigger_patterns": [
+        "اطفي النور بالراحة",
+        "ضلم بهدوء"
+      ],
+      "action_type": "esp32",
+      "action_payload": {
+        "endpoint": "/relay",
+        "params": { "ch": 1, "state": "off" }
+      },
+      "variations": [
+        {
+          "id": 1,
+          "text_ar": "قفلت النور بالراحة، أحلام سعيدة",
+          "audio_file": "audio_cache/whispers/whisper_light_off_1.wav",
+          "emotion": "whisper"
+        },
+        {
+          "id": 2,
+          "text_ar": "النور اتقفل، نوم هادي إن شاء الله",
+          "audio_file": "audio_cache/whispers/whisper_light_off_2.wav",
+          "emotion": "whisper"
+        }
+      ]
+    }
+  ]
+}
+

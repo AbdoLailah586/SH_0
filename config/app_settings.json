@@ -1,0 +1,17 @@
+{
+  "esp32_ip": "http://esp32-smarthome.local",
+  "esp32_serial_port": "COM3",
+  "esp32_connection_mode": "wifi",
+  "ducking_level": 0.25,
+  "ducking_enabled": true,
+  "input_device_index": null,
+  "lan_port": 8765,
+  "fish_speech_url": "http://127.0.0.1:8080/v1/tts",
+  "stt_engine": "google_ar",
+  "whisper_model": "base",
+  "fuzzy_threshold": 78,
+  "night_mode": false,
+  "auto_night_schedule": true,
+  "minimize_to_tray_on_close": true
+}
+

@@ -105,9 +105,10 @@ class SettingsTab(QWidget):
 
         stt_layout.addWidget(QLabel("محرك الـ STT الأساسي:"), 0, 0)
         self.combo_stt = QComboBox()
-        self.combo_stt.addItem("Groq Whisper Large V3 Turbo (<200ms، 0% VRAM) ⚡ [موصى به]", "groq_whisper")
-        self.combo_stt.addItem("Local Faster-Whisper على معالج i5-12450HX (أوفلاين بدون كارت شاشة)", "faster_whisper_cpu")
-        self.combo_stt.addItem("Google Speech Recognition (ar-EG) - سريع وخفيف", "google_ar")
+        self.combo_stt.addItem("Groq Whisper Large V3 Turbo (<200ms، دقة خارقة مع تطبيع الصوت) ⚡ [موصى به]", "groq_whisper")
+        self.combo_stt.addItem("NVIDIA GeForce RTX 4050 GPU (أوفلاين محلي عبر CUDA)", "faster_whisper_cuda")
+        self.combo_stt.addItem("Local Faster-Whisper على معالج i5-12450HX (أوفلاين CPU int8)", "faster_whisper_cpu")
+        self.combo_stt.addItem("Google Speech Recognition (ar-EG) - خفيف وسريع", "google_ar")
         
         idx = self.combo_stt.findData(self.settings_data.get("stt_engine", "groq_whisper"))
         if idx >= 0:

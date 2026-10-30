@@ -18,6 +18,17 @@ import wave
 from typing import List, Dict, Any, Optional, Callable
 import numpy as np
 
+# Ensure torch/lib is in DLL directory for faster-whisper CUDA cublas/cudnn on Windows
+try:
+    import torch
+    _torch_lib = os.path.join(os.path.dirname(torch.__file__), "lib")
+    if os.path.exists(_torch_lib):
+        if hasattr(os, "add_dll_directory"):
+            os.add_dll_directory(_torch_lib)
+        os.environ["PATH"] = _torch_lib + os.pathsep + os.environ.get("PATH", "")
+except Exception:
+    pass
+
 try:
     import sounddevice as sd
     SD_AVAILABLE = True
@@ -46,25 +57,50 @@ import requests
 from core.paths import resolve_path
 
 
+from collections import deque
+
 EGYPTIAN_SMARTHOME_PROMPT = (
-    "مساعد صوتي ذكي للسمارت هوم بالعامية المصرية: افتح النور، اطفي النور، وطي الصوت، علي الصوت، "
-    "شغل التكييف على 22، افتح الشباك، بطارية اللابتوب كام، لمبة الاختبار، اقفل اللابتوب، اسمك ايه."
+    "أهلاً بيك، محادثة طبيعية بالعامية المصرية مع المساعد الصوتي الذكي للتحكم في المنزل واللابتوب والاستفسارات اليومية والدردشة."
 )
 
 
 def numpy_to_wav_bytes(audio_data: np.ndarray, samplerate: int = 16000) -> bytes:
-    """Encodes int16 mono numpy audio array into standard PCM WAV bytes in memory."""
+    """
+    Encodes audio array into standard PCM WAV bytes with automatic peak normalization
+    and dynamic gain boost to ensure Whisper receives loud, crystal-clear Egyptian speech.
+    """
     if audio_data.ndim > 1:
-        audio_data = audio_data.flatten()
-    if audio_data.dtype != np.int16:
-        audio_data = (np.clip(audio_data, -1.0, 1.0) * 32767).astype(np.int16)
+        if audio_data.shape[1] > 1:
+            audio_data = np.mean(audio_data, axis=1)
+        else:
+            audio_data = audio_data.flatten()
+
+    # Convert to float32 normalized in [-1.0, 1.0]
+    if audio_data.dtype == np.int16:
+        float_audio = audio_data.astype(np.float32) / 32768.0
+    else:
+        float_audio = audio_data.astype(np.float32)
+
+    # Calculate peak amplitude
+    peak = float(np.max(np.abs(float_audio))) if len(float_audio) > 0 else 0.0
+
+    # Apply smart dynamic gain boost:
+    # Laptops (like Lenovo LOQ) often capture quiet audio (e.g. peak < 0.15).
+    # We boost the signal up to a clean studio target of 0.85 (-1.4 dBFS)
+    if peak > 0.005:
+        target_peak = 0.85
+        gain = min(target_peak / peak, 12.0)  # Cap max gain multiplier at 12x
+        float_audio = float_audio * gain
+
+    # Soft clip and convert back to 16-bit PCM
+    int16_audio = (np.clip(float_audio, -1.0, 1.0) * 32767.0).astype(np.int16)
 
     bio = io.BytesIO()
     with wave.open(bio, "wb") as wf:
         wf.setnchannels(1)
         wf.setsampwidth(2)
         wf.setframerate(samplerate)
-        wf.writeframes(audio_data.tobytes())
+        wf.writeframes(int16_audio.tobytes())
     return bio.getvalue()
 
 
@@ -174,8 +210,11 @@ class STTEngine:
 
     # --- PUSH-TO-TALK & CONTINUOUS VAD ---
 
-    def trigger_push_to_talk_record(self, duration_sec: float = 3.5):
-        """Records directly via sounddevice and sends to STT (No PyAudio required)."""
+    def trigger_push_to_talk_record(self, max_duration_sec: float = 5.5):
+        """
+        Records dynamically via sounddevice with voice activity detection.
+        Stops automatically after speech finishes or when max duration is reached.
+        """
         if not SD_AVAILABLE or self.is_recording:
             return
 
@@ -195,19 +234,32 @@ class STTEngine:
                 self.on_status_change("listening")
 
             samplerate = 16000
-            total_frames = int(duration_sec * samplerate)
             audio_buffer = []
+            pre_roll = deque(maxlen=10)  # 640ms pre-speech buffer
 
-            # Stream-based recording with live VU update during recording
+            has_spoken = False
+            silence_chunks = 0
+            energy_threshold = 450.0
+
             def _rec_callback(indata, frames, time_info, status):
-                audio_buffer.append(indata.copy())
+                nonlocal has_spoken, silence_chunks
+                float_data = indata.astype(np.float32)
+                rms = float(np.sqrt(np.mean(float_data**2)))
                 if self.on_level_update:
-                    try:
-                        rms = np.sqrt(np.mean(indata**2))
-                        lvl = int(min(100, max(0, (math.log10(rms + 1e-6) + 3) / 3 * 100)))
-                        self.on_level_update(lvl)
-                    except Exception:
-                        pass
+                    lvl = int(min(100, max(0, (math.log10(rms + 1e-6) + 3) / 3 * 100)))
+                    self.on_level_update(lvl)
+
+                if rms > energy_threshold:
+                    if not has_spoken:
+                        has_spoken = True
+                        audio_buffer.extend(list(pre_roll))
+                    audio_buffer.append(indata.copy())
+                    silence_chunks = 0
+                elif has_spoken:
+                    audio_buffer.append(indata.copy())
+                    silence_chunks += 1
+                else:
+                    pre_roll.append(indata.copy())
 
             try:
                 with sd.InputStream(
@@ -218,18 +270,28 @@ class STTEngine:
                     dtype="int16",
                     callback=_rec_callback
                 ):
-                    time.sleep(duration_sec)
+                    # Smart dynamic recording loop
+                    start_t = time.time()
+                    while time.time() - start_t < max_duration_sec:
+                        time.sleep(0.05)
+                        # Stop if user spoke and then stayed silent for > 1.0 second (~16 chunks)
+                        if has_spoken and silence_chunks >= 16:
+                            break
+
+                # If the user didn't cross energy threshold, take whatever audio was captured in pre-roll
+                if not audio_buffer and pre_roll:
+                    audio_buffer = list(pre_roll)
 
                 if audio_buffer:
                     audio_array = np.concatenate(audio_buffer, axis=0)
                 else:
-                    audio_array = np.zeros((total_frames, 1), dtype=np.int16)
+                    audio_array = np.zeros((samplerate * 2, 1), dtype=np.int16)
 
                 if self.on_status_change:
                     self.on_status_change("processing")
 
                 wav_bytes = numpy_to_wav_bytes(audio_array, samplerate=samplerate)
-                text = self._recognize_wav_bytes(wav_bytes)
+                text = self._recognize_wav_bytes(wav_bytes, audio_array=audio_array)
 
                 if text and self.on_transcript:
                     self.on_transcript(text)
@@ -247,7 +309,7 @@ class STTEngine:
         threading.Thread(target=_record_worker, daemon=True).start()
 
     def start_continuous_listening(self):
-        """Continuous Voice Activity Detection (VAD) via sounddevice."""
+        """Continuous Voice Activity Detection (VAD) with rolling pre-roll buffer."""
         if not SD_AVAILABLE or self.is_listening:
             return
 
@@ -258,8 +320,10 @@ class STTEngine:
         if self._level_stream:
             try:
                 self._level_stream.stop()
+                self._level_stream.close()
             except Exception:
                 pass
+            self._level_stream = None
 
         if self.on_status_change:
             self.on_status_change("listening")
@@ -270,22 +334,27 @@ class STTEngine:
             "silence_frames": 0,
             "speech_buffer": []
         }
-        silence_threshold_frames = int(samplerate / 1024 * 0.8)  # ~0.8s silence
-        energy_threshold = 400  # Int16 RMS threshold
+        pre_roll = deque(maxlen=10)  # ~640ms pre-speech audio
+        silence_threshold_frames = int(samplerate / 1024 * 0.9)  # ~0.9s silence to close utterance
+        energy_threshold = 480.0  # Float RMS threshold
 
         def _cont_callback(indata, frames, time_info, status):
             if not self.is_listening:
                 return
 
-            rms = np.sqrt(np.mean(indata.astype(np.float32)**2))
+            float_data = indata.astype(np.float32)
+            rms = float(np.sqrt(np.mean(float_data**2)))
             if self.on_level_update:
                 lvl = int(min(100, max(0, (math.log10(rms + 1e-6) + 3) / 3 * 100)))
                 self.on_level_update(lvl)
 
             if rms > energy_threshold:
-                vad_state["is_speaking"] = True
-                vad_state["silence_frames"] = 0
+                if not vad_state["is_speaking"]:
+                    vad_state["is_speaking"] = True
+                    # Prepend pre-roll buffer so the beginning of the word is never chopped!
+                    vad_state["speech_buffer"].extend(list(pre_roll))
                 vad_state["speech_buffer"].append(indata.copy())
+                vad_state["silence_frames"] = 0
             elif vad_state["is_speaking"]:
                 vad_state["speech_buffer"].append(indata.copy())
                 vad_state["silence_frames"] += 1
@@ -296,19 +365,21 @@ class STTEngine:
                     buf = list(vad_state["speech_buffer"])
                     vad_state["speech_buffer"] = []
 
-                    if len(buf) > 10:  # At least ~0.5s of audio
+                    if len(buf) > 12:  # At least ~0.75s of speech
                         def _bg_transcribe(chunks):
                             if self.on_status_change:
                                 self.on_status_change("processing")
                             arr = np.concatenate(chunks, axis=0)
                             wb = numpy_to_wav_bytes(arr, samplerate=samplerate)
-                            t = self._recognize_wav_bytes(wb)
+                            t = self._recognize_wav_bytes(wb, audio_array=arr)
                             if t and self.on_transcript:
                                 self.on_transcript(t)
                             if self.is_listening and self.on_status_change:
                                 self.on_status_change("listening")
 
                         threading.Thread(target=_bg_transcribe, args=(buf,), daemon=True).start()
+            else:
+                pre_roll.append(indata.copy())
 
         try:
             self._continuous_stream = sd.InputStream(
@@ -342,7 +413,7 @@ class STTEngine:
 
     # --- MULTI-ENGINE TRANSCRIBER ---
 
-    def _recognize_wav_bytes(self, wav_bytes: bytes) -> str:
+    def _recognize_wav_bytes(self, wav_bytes: bytes, audio_array: Optional[np.ndarray] = None) -> str:
         if not wav_bytes or len(wav_bytes) < 1000:
             return ""
 
@@ -377,33 +448,43 @@ class STTEngine:
                 except Exception as e:
                     print(f"[Groq Whisper Request Error] {e}")
 
-        # Engine 2: Local faster-whisper on CPU (int8, 0% GPU VRAM)
-        if self.engine_type == "faster_whisper_cpu" and FASTER_WHISPER_AVAILABLE:
+        # Engine 2: Local faster-whisper on NVIDIA RTX 4050 GPU (CUDA float16) or CPU
+        if (self.engine_type in ("faster_whisper_cuda", "faster_whisper_cpu") or not self.groq_api_key) and FASTER_WHISPER_AVAILABLE:
             try:
                 if self._faster_whisper_model is None:
+                    import torch
+                    use_cuda = (self.engine_type == "faster_whisper_cuda" or torch.cuda.is_available())
+                    device = "cuda" if use_cuda else "cpu"
+                    compute_type = "float16" if use_cuda else "int8"
                     self._faster_whisper_model = WhisperModel(
                         "base",
-                        device="cpu",
-                        compute_type="int8",
-                        cpu_threads=4
+                        device=device,
+                        compute_type=compute_type
                     )
 
-                with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
-                    f.write(wav_bytes)
-                    temp_wav = f.name
+                # Direct float32 tensor fed to GPU to bypass av.open bug in Python 3.13
+                if audio_array is not None:
+                    fl_audio = audio_array.flatten().astype(np.float32)
+                    if audio_array.dtype == np.int16:
+                        fl_audio = fl_audio / 32768.0
+                    peak = float(np.max(np.abs(fl_audio))) if len(fl_audio) > 0 else 0.0
+                    if peak > 0.005:
+                        fl_audio = fl_audio * min(0.85 / peak, 12.0)
+                else:
+                    fl_audio = np.frombuffer(wav_bytes[44:], dtype=np.int16).astype(np.float32) / 32768.0
 
                 segments, _ = self._faster_whisper_model.transcribe(
-                    temp_wav,
+                    fl_audio,
                     language="ar",
+                    vad_filter=True,
+                    vad_parameters=dict(min_silence_duration_ms=400),
                     initial_prompt=EGYPTIAN_SMARTHOME_PROMPT
                 )
                 text = " ".join([seg.text for seg in segments]).strip()
-                if os.path.exists(temp_wav):
-                    os.remove(temp_wav)
                 if text:
                     return text
             except Exception as e:
-                print(f"[Faster Whisper CPU Error] {e}")
+                print(f"[Faster Whisper CUDA Error] {e}")
 
         # Engine 3: Online Google Speech Recognition (ar-EG) fallback
         if SR_AVAILABLE:

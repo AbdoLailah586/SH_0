@@ -41,6 +41,10 @@ config/ssl/key.pem
 # Private App Settings with API Keys
 config/app_settings.json
 
+# Temporary Dynamic Audio Cache
+audio_cache/dynamic/
+*.temp.mp3
+
 # Logs and databases
 *.log
 *.sqlite

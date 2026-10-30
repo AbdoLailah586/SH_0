@@ -68,6 +68,7 @@ class MainWindow(QMainWindow):
     signal_vu_level = pyqtSignal(int)
     signal_status_change = pyqtSignal(str)
     signal_lan_command = pyqtSignal(str)
+    signal_log_entry = pyqtSignal(str, str, str, str, float)
 
     def __init__(self):
         super().__init__()
@@ -83,7 +84,7 @@ class MainWindow(QMainWindow):
         self.laptop = LaptopController()
         self.esp32 = ESP32Controller()
         self.intent_parser = IntentParser()
-        self.audio_player = AudioPlayer(ducking_enabled=True, duck_level=0.25)
+        self.audio_player = AudioPlayer(ducking_enabled=False, duck_level=0.50)
         self.fish_client = FishSpeechClient()
         self.stt_engine = STTEngine(engine_type="groq_whisper")
         self.llm = LLMBrain()
@@ -98,6 +99,7 @@ class MainWindow(QMainWindow):
         self.signal_vu_level.connect(self._on_vu_level)
         self.signal_status_change.connect(self._on_stt_status)
         self.signal_lan_command.connect(self.process_spoken_arabic_command)
+        self.signal_log_entry.connect(lambda u, i, a, f, l: self.tab_dashboard.append_log_entry(u, i, a, f, l))
 
         self.init_tabs()
         self.init_system_tray()
@@ -307,21 +309,24 @@ class MainWindow(QMainWindow):
     def _synthesize_and_play_live(self, text: str, action_desc: str = "Live Dynamic Response"):
         t0 = time.perf_counter()
         def _worker():
-            live_wav = self.fish_client.synthesize_live(text)
+            live_audio = self.fish_client.synthesize_live(text)
             latency = (time.perf_counter() - t0) * 1000
-            if live_wav and os.path.exists(live_wav):
+            if live_audio and os.path.exists(live_audio):
                 self.audio_player.play_wav(
-                    live_wav,
-                    on_start=lambda: self.tab_dashboard.update_status("speaking"),
-                    on_finish=lambda: self.tab_dashboard.update_status("idle")
+                    live_audio,
+                    on_start=lambda: self.signal_status_change.emit("speaking"),
+                    on_finish=lambda: self.signal_status_change.emit("idle")
                 )
-                self.tab_dashboard.append_log_entry(
-                    user_spoken=text,
-                    intent_id="LIVE_DYNAMIC_SYNTHESIS",
-                    action=action_desc,
-                    audio_file=os.path.basename(live_wav),
-                    latency_ms=latency
-                )
+            else:
+                self.signal_status_change.emit("idle")
+
+            self.signal_log_entry.emit(
+                text,
+                "LIVE_DYNAMIC_SYNTHESIS",
+                action_desc,
+                os.path.basename(live_audio) if live_audio else "Live Voice",
+                latency
+            )
         threading.Thread(target=_worker, daemon=True).start()
 
     # --- MAIN COMMAND ROUTER ---
@@ -385,39 +390,41 @@ class MainWindow(QMainWindow):
             if audio_file:
                 self.audio_player.play_wav(
                     audio_file,
-                    on_start=lambda: self.tab_dashboard.update_status("speaking"),
-                    on_finish=lambda: self.tab_dashboard.update_status("idle")
+                    on_start=lambda: self.signal_status_change.emit("speaking"),
+                    on_finish=lambda: self.signal_status_change.emit("idle")
                 )
 
-            self.tab_dashboard.append_log_entry(
-                user_spoken=spoken_text,
-                intent_id=f"{intent_id} ({int(confidence)}%)",
-                action=action_desc,
-                audio_file=audio_file,
-                latency_ms=parse_latency
+            self.signal_log_entry.emit(
+                spoken_text,
+                f"{intent_id} ({int(confidence)}%)",
+                action_desc,
+                audio_file,
+                parse_latency
             )
             return
 
         # 3. Route to Groq / OpenRouter LLM Brain for General Questions or Complex Multi-Step Commands
         def _llm_worker():
-            self.tab_dashboard.update_status("processing")
+            self.signal_status_change.emit("processing")
             reply_text, executed_actions, provider, llm_latency = self.llm.process_user_query(spoken_text)
 
-            live_wav = self.fish_client.synthesize_live(reply_text)
-            if live_wav and os.path.exists(live_wav):
+            live_audio = self.fish_client.synthesize_live(reply_text)
+            if live_audio and os.path.exists(live_audio):
                 self.audio_player.play_wav(
-                    live_wav,
-                    on_start=lambda: self.tab_dashboard.update_status("speaking"),
-                    on_finish=lambda: self.tab_dashboard.update_status("idle")
+                    live_audio,
+                    on_start=lambda: self.signal_status_change.emit("speaking"),
+                    on_finish=lambda: self.signal_status_change.emit("idle")
                 )
+            else:
+                self.signal_status_change.emit("idle")
 
             act_str = ", ".join(executed_actions) if executed_actions else "Conversation Reply"
-            self.tab_dashboard.append_log_entry(
-                user_spoken=spoken_text,
-                intent_id=f"LLM: {provider}",
-                action=act_str,
-                audio_file=os.path.basename(live_wav) if live_wav else "Live Synthesis",
-                latency_ms=llm_latency
+            self.signal_log_entry.emit(
+                spoken_text,
+                f"LLM: {provider}",
+                act_str,
+                os.path.basename(live_audio) if live_audio else "Live Voice",
+                llm_latency
             )
 
         threading.Thread(target=_llm_worker, daemon=True).start()

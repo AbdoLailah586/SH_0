@@ -88,11 +88,36 @@ class FishSpeechGPUServerManager:
                 self.process = None
 
     def get_vram_usage(self) -> Dict[str, Any]:
-        """Queries RTX 4050 VRAM stats via nvidia-smi."""
+        """Queries RTX 4050 VRAM stats in-process via torch.cuda first, or stealth nvidia-smi."""
         try:
+            import torch
+            if torch.cuda.is_available():
+                free_bytes, total_bytes = torch.cuda.mem_get_info(0)
+                used_mb = (total_bytes - free_bytes) // (1024**2)
+                total_mb = total_bytes // (1024**2)
+                util_pct = int(used_mb / total_mb * 100) if total_mb else 0
+                return {
+                    "used_mb": int(used_mb),
+                    "total_mb": int(total_mb),
+                    "util_pct": util_pct,
+                    "text": f"{used_mb} MB / {total_mb} MB (RTX 4050)"
+                }
+        except Exception:
+            pass
+
+        try:
+            creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+            startupinfo = None
+            if os.name == "nt":
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                startupinfo.wShowWindow = 0  # SW_HIDE
+
             out = subprocess.check_output(
                 ["nvidia-smi", "--query-gpu=memory.used,memory.total,utilization.gpu", "--format=csv,nounits,noheader"],
-                encoding="utf-8"
+                encoding="utf-8",
+                creationflags=creationflags,
+                startupinfo=startupinfo
             ).strip()
             parts = [p.strip() for p in out.split(",")]
             if len(parts) >= 3:
@@ -188,10 +213,11 @@ class FishSpeechClient:
         High-Definition Egyptian Neural Fallback (edge-tts + ffmpeg).
         Generates 100% natural colloquial Egyptian Arabic without robotic SAPI artifacts.
         """
-        # Clean emotion tags like [friendly], [whisper] from spoken text
+        # Clean emotion tags and emojis from spoken text
         clean_text = re.sub(r'\[.*?\]', '', text).strip()
+        clean_text = re.sub(r'[\U00010000-\U0010ffff]', '', clean_text).strip()
         if not clean_text:
-            clean_text = text
+            clean_text = "تمام يا فندم"
 
         voice = "ar-EG-ShakirNeural" if gender == "male" else "ar-EG-SalmaNeural"
 
@@ -208,7 +234,7 @@ class FishSpeechClient:
             rate = "-8%"
             pitch = "-2Hz"
 
-        temp_mp3 = output_path + ".temp.mp3"
+        temp_mp3 = output_path if output_path.endswith(".mp3") else output_path + ".temp.mp3"
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
 
         async def _synth():
@@ -219,7 +245,6 @@ class FishSpeechClient:
             try:
                 loop = asyncio.get_event_loop()
                 if loop.is_running():
-                    # Run in separate thread if loop is already active
                     import concurrent.futures
                     with concurrent.futures.ThreadPoolExecutor() as pool:
                         pool.submit(lambda: asyncio.run(_synth())).result()
@@ -228,21 +253,51 @@ class FishSpeechClient:
             except RuntimeError:
                 asyncio.run(_synth())
 
-            if os.path.exists(temp_mp3) and os.path.getsize(temp_mp3) > 500:
-                # Convert to high-quality 44.1kHz 16-bit PCM .wav
-                subprocess.run(
-                    ["ffmpeg", "-y", "-i", temp_mp3, "-ar", "44100", "-ac", "2", "-c:a", "pcm_s16le", output_path],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    check=True
-                )
-                if os.path.exists(temp_mp3):
-                    os.remove(temp_mp3)
-                return os.path.exists(output_path) and os.path.getsize(output_path) > 1000
+            if os.path.exists(temp_mp3) and os.path.getsize(temp_mp3) > 300:
+                if output_path.endswith(".mp3"):
+                    return True
+
+                # Convert to high-quality 44.1kHz 16-bit PCM .wav with NO CMD WINDOW
+                ffmpeg_bin = shutil.which("ffmpeg") or "ffmpeg"
+                try:
+                    creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+                    startupinfo = None
+                    if os.name == "nt":
+                        startupinfo = subprocess.STARTUPINFO()
+                        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                        startupinfo.wShowWindow = 0
+
+                    subprocess.run(
+                        [ffmpeg_bin, "-y", "-i", temp_mp3, "-ar", "44100", "-ac", "2", "-c:a", "pcm_s16le", output_path],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        creationflags=creationflags,
+                        startupinfo=startupinfo,
+                        check=True
+                    )
+                    if os.path.exists(temp_mp3):
+                        try:
+                            os.remove(temp_mp3)
+                        except Exception:
+                            pass
+                    return os.path.exists(output_path) and os.path.getsize(output_path) > 1000
+                except Exception as fe:
+                    print(f"[FFmpeg Convert Warning] {fe}. Preserving direct MP3 fallback.")
+                    mp3_target = os.path.splitext(output_path)[0] + ".mp3"
+                    if os.path.exists(mp3_target):
+                        try:
+                            os.remove(mp3_target)
+                        except Exception:
+                            pass
+                    os.rename(temp_mp3, mp3_target)
+                    return True
         except Exception as e:
             print(f"[Egyptian Neural Synth Error] {e}")
-            if os.path.exists(temp_mp3):
-                os.remove(temp_mp3)
+            if os.path.exists(temp_mp3) and temp_mp3 != output_path:
+                try:
+                    os.remove(temp_mp3)
+                except Exception:
+                    pass
 
         return False
 
@@ -270,7 +325,7 @@ class FishSpeechClient:
     def synthesize_live(self, text: str, emotion: str = "normal") -> Optional[str]:
         """
         Synthesizes dynamic text (live battery %, CPU stats, or live LLM reply)
-        and returns the absolute path to the generated .wav file.
+        and returns the absolute path to the generated playable audio file (.wav or .mp3).
         """
         dynamic_dir = resolve_path("audio_cache/dynamic")
         os.makedirs(dynamic_dir, exist_ok=True)
@@ -279,7 +334,16 @@ class FishSpeechClient:
 
         success, _ = self.generate_clip(text, out_wav, emotion=emotion)
         if success:
-            return out_wav
+            if os.path.exists(out_wav) and os.path.getsize(out_wav) > 500:
+                return out_wav
+            mp3_alt = os.path.join(dynamic_dir, f"live_{ts}.mp3")
+            if os.path.exists(mp3_alt) and os.path.getsize(mp3_alt) > 500:
+                return mp3_alt
+
+        # Emergency cached voice fallback so user is NEVER left in silence
+        ack_cached = resolve_path("audio_cache/greetings/instant_ack_1.wav")
+        if os.path.exists(ack_cached):
+            return ack_cached
         return None
 
     def batch_generate_manifest(

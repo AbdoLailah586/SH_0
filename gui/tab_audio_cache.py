@@ -33,6 +33,7 @@ except ImportError:
 
 class AudioCacheTab(QWidget):
     request_preview_audio = pyqtSignal(str)
+    signal_gpu_status = pyqtSignal(dict, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -41,6 +42,7 @@ class AudioCacheTab(QWidget):
         self.manifest_data = {}
         self.table_items = []
 
+        self.signal_gpu_status.connect(self._apply_gpu_status)
         self.init_ui()
         self.load_manifest()
 
@@ -242,19 +244,18 @@ class AudioCacheTab(QWidget):
         def _worker():
             vram = self.fish_client.server_manager.get_vram_usage()
             online = self.fish_client.is_server_online()
-            return vram, online
+            self.signal_gpu_status.emit(vram, online)
 
-        def _update(res):
-            vram, online = res
-            self.lbl_vram.setText(f"VRAM (RTX 4050): {vram['text']}")
-            if online:
-                self.lbl_fish_status.setText("سيرفر Fish Speech: متصل بـ CUDA 🟢")
-                self.lbl_fish_status.setStyleSheet("font-size: 13px; font-weight: bold; color: #238636;")
-            else:
-                self.lbl_fish_status.setText("سيرفر Fish Speech: غير متصل (بديل Neural مصري جاهز) 🟡")
-                self.lbl_fish_status.setStyleSheet("font-size: 13px; font-weight: bold; color: #e3b341;")
+        threading.Thread(target=_worker, daemon=True).start()
 
-        threading.Thread(target=lambda: _update(_worker()), daemon=True).start()
+    def _apply_gpu_status(self, vram: dict, online: bool):
+        self.lbl_vram.setText(f"VRAM (RTX 4050): {vram.get('text', 'RTX 4050')}")
+        if online:
+            self.lbl_fish_status.setText("سيرفر Fish Speech: متصل بـ CUDA 🟢")
+            self.lbl_fish_status.setStyleSheet("font-size: 13px; font-weight: bold; color: #238636;")
+        else:
+            self.lbl_fish_status.setText("سيرفر Fish Speech: غير متصل (بديل Neural مصري جاهز) 🟡")
+            self.lbl_fish_status.setStyleSheet("font-size: 13px; font-weight: bold; color: #e3b341;")
 
     def _on_start_server_clicked(self):
         self.btn_start_server.setEnabled(False)

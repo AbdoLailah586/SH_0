@@ -20,7 +20,7 @@ except ImportError:
 
 
 class AudioPlayer:
-    def __init__(self, ducking_enabled: bool = True, duck_level: float = 0.25):
+    def __init__(self, ducking_enabled: bool = False, duck_level: float = 0.50):
         self.ducking_enabled = ducking_enabled
         self.ducker = AudioDucker(duck_level=duck_level)
         self._is_playing = False
@@ -48,15 +48,19 @@ class AudioPlayer:
         blocking: bool = False
     ):
         """
-        Plays a .wav file with automatic volume ducking.
+        Plays a .wav or .mp3 file through laptop default speakers.
         """
         full_path = resolve_path(wav_path)
 
         if not os.path.exists(full_path):
-            print(f"[AudioPlayer] File not found: {full_path}")
-            if on_finish:
-                on_finish()
-            return False
+            mp3_alt = os.path.splitext(full_path)[0] + ".mp3"
+            if os.path.exists(mp3_alt):
+                full_path = mp3_alt
+            else:
+                print(f"[AudioPlayer] File not found: {full_path}")
+                if on_finish:
+                    on_finish()
+                return False
 
         def _play_worker():
             with self._lock:
@@ -72,13 +76,24 @@ class AudioPlayer:
                     except Exception:
                         pass
 
+                if PYGAME_AVAILABLE:
+                    if not pygame.mixer.get_init():
+                        try:
+                            pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=512)
+                        except Exception:
+                            try:
+                                pygame.mixer.init()
+                            except Exception:
+                                pass
+
                 if PYGAME_AVAILABLE and pygame.mixer.get_init():
                     sound = pygame.mixer.Sound(full_path)
+                    sound.set_volume(1.0)
                     sound_channel = sound.play()
                     while sound_channel and sound_channel.get_busy():
                         time.sleep(0.02)
-                else:
-                    # Windows winsound fallback
+                elif full_path.endswith(".wav"):
+                    # Windows winsound fallback for wav files
                     import winsound
                     winsound.PlaySound(full_path, winsound.SND_FILENAME)
 
@@ -86,7 +101,6 @@ class AudioPlayer:
                 print(f"[AudioPlayer Error] {e}")
             finally:
                 if self.ducking_enabled:
-                    # Brief rest before restoring volume to avoid click
                     time.sleep(0.08)
                     self.ducker.stop_ducking()
 

@@ -171,23 +171,28 @@ class LaptopController:
     # --- APPLICATION LAUNCHER ---
 
     def launch_app(self, app_name: str) -> bool:
-        """Launches common applications without blocking."""
+        """Launches common applications without blocking or flashing console windows."""
         app_name = app_name.lower().strip()
         try:
             if "chrome" in app_name:
-                subprocess.Popen(["cmd", "/c", "start", "chrome"], shell=True)
+                os.startfile("chrome")
             elif "spotify" in app_name:
-                subprocess.Popen(["cmd", "/c", "start", "spotify:"], shell=True)
+                os.startfile("spotify:")
             elif "notepad" in app_name:
-                subprocess.Popen(["notepad.exe"])
+                os.startfile("notepad.exe")
             elif "calc" in app_name:
-                subprocess.Popen(["calc.exe"])
+                os.startfile("calc.exe")
             elif "code" in app_name or "vscode" in app_name:
-                subprocess.Popen(["cmd", "/c", "code"], shell=True)
+                creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+                subprocess.Popen(["cmd", "/c", "code"], shell=True, creationflags=creationflags)
             elif "explorer" in app_name:
-                subprocess.Popen(["explorer.exe"])
+                os.startfile("explorer.exe")
             else:
-                subprocess.Popen(["cmd", "/c", "start", app_name], shell=True)
+                try:
+                    os.startfile(app_name)
+                except Exception:
+                    creationflags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
+                    subprocess.Popen(["cmd", "/c", "start", app_name], shell=True, creationflags=creationflags)
             return True
         except Exception as e:
             print(f"[LaunchApp Error] {e}")

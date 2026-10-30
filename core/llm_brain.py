@@ -102,7 +102,8 @@ class LLMBrain:
         self.openrouter_api_key = openrouter_api_key
         self._load_keys_from_settings()
 
-        self.groq_model = "llama-3.3-70b-versatile"
+        self.groq_model = "qwen/qwen3.8-27b"
+        self.groq_fallback_models = ["qwen/qwen3.8-27b", "allam-2-7b", "llama-3.3-70b-versatile"]
         self.openrouter_model = "meta-llama/llama-3.3-70b-instruct:free"
 
         # Action handlers (bound from MainWindow)
@@ -146,25 +147,36 @@ class LLMBrain:
             "Authorization": f"Bearer {self.groq_api_key}",
             "Content-Type": "application/json"
         }
-        payload = {
-            "model": self.groq_model,
-            "messages": messages,
-            "tools": SMART_HOME_TOOLS,
-            "tool_choice": "auto",
-            "temperature": 0.4,
-            "max_tokens": 150
-        }
 
-        try:
-            resp = requests.post(url, headers=headers, json=payload, timeout=4.0)
-            if resp.status_code == 200:
-                return True, resp.json(), "OK"
-            elif resp.status_code == 429:
-                return False, None, "Groq Rate Limit (429)"
-            else:
-                return False, None, f"Groq Error {resp.status_code}: {resp.text[:100]}"
-        except Exception as e:
-            return False, None, f"Groq Exception: {str(e)}"
+        # Try active model first, then fallback models if 404
+        candidates = [self.groq_model] + [m for m in self.groq_fallback_models if m != self.groq_model]
+        last_err = ""
+        for model in candidates:
+            payload = {
+                "model": model,
+                "messages": messages,
+                "tools": SMART_HOME_TOOLS,
+                "tool_choice": "auto",
+                "temperature": 0.4,
+                "max_tokens": 150
+            }
+
+            try:
+                resp = requests.post(url, headers=headers, json=payload, timeout=4.0)
+                if resp.status_code == 200:
+                    self.groq_model = model  # cache working model
+                    return True, resp.json(), "OK"
+                elif resp.status_code == 404:
+                    last_err = f"Model {model} not found (404)"
+                    continue
+                elif resp.status_code == 429:
+                    return False, None, "Groq Rate Limit (429)"
+                else:
+                    return False, None, f"Groq Error {resp.status_code}: {resp.text[:100]}"
+            except Exception as e:
+                return False, None, f"Groq Exception: {str(e)}"
+
+        return False, None, last_err or "No working Groq model found"
 
     def call_openrouter(self, messages: List[Dict[str, Any]]) -> Tuple[bool, Optional[Dict[str, Any]], str]:
         """Fallback to OpenRouter (:free model)."""

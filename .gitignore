@@ -38,6 +38,9 @@ checkpoints/
 config/ssl/cert.pem
 config/ssl/key.pem
 
+# Private App Settings with API Keys
+config/app_settings.json
+
 # Logs and databases
 *.log
 *.sqlite
@@ -55,3 +58,4 @@ $RECYCLE.BIN/
 .idea/
 *.sublime-project
 *.sublime-workspace
+

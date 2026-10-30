@@ -335,3 +335,4 @@ dist\SmartHomeVoiceHub\SmartHomeVoiceHub.exe
 <div align="center">
   <sub>تم التطوير بواسطة <b>Abdo Lailah</b>. مصمم لأقصى أداء واستجابة في الحوسبة الذكية المحيطية.</sub>
 </div>
+

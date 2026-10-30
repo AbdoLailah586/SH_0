@@ -12,6 +12,7 @@ import os
 import sys
 import threading
 import time
+from typing import Optional, List, Dict, Any, Tuple, Callable
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtGui import QIcon, QAction, QColor, QPixmap, QPainter, QBrush
 from PyQt6.QtWidgets import (

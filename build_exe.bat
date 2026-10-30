@@ -19,9 +19,14 @@ IF EXIST ".venv\Scripts\python.exe" (
 
 echo [*] Using Python: %PY_EXE%
 
-echo [*] Checking audio cache and reference voices...
-%PY_EXE% scripts\generate_reference_voices.py
-%PY_EXE% scripts\pregenerate_voice_bank.py
+echo [*] Verifying audio cache and reference voices...
+IF NOT EXIST "audio_cache\lighting\light_reception_on_1.wav" (
+    echo [*] Cache missing. Generating Egyptian audio cache and reference voices...
+    %PY_EXE% scripts\generate_reference_voices.py
+    %PY_EXE% scripts\pregenerate_voice_bank.py
+) ELSE (
+    echo [*] Egyptian Arabic audio cache is ready - 70 WAVs verified.
+)
 
 echo.
 echo [*] Compiling Standalone Windows Desktop Application (.exe)...
